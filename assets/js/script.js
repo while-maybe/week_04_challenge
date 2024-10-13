@@ -1,9 +1,13 @@
+"use strict";
+
 window.addEventListener("DOMContentLoaded", () => {
   const searchTermEl = document.getElementById("searchTerm");
   const searchBtnEl = document.getElementById("searchButton");
   const newTaskEl = document.getElementById("newTask");
   const addButtonEl = document.getElementById("addButton");
   const tableDataEls = document.getElementById("table-data");
+
+  const delRowEls = document.getElementsByClassName("delete-btn");
 
   const task1 = {
     status: "Incomplete",
@@ -19,23 +23,46 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const allTasks = [task1];
   allTasks.push(task2);
+  
+  addButtonEl.addEventListener("click", () => createTask(newTaskEl));
 
-  addButtonEl.addEventListener("click", () => createTask(newTaskEl.value));
-
-  function createTask(title, tasks = allTasks) {
-    const new_title = title.trim();
-
-    const _isUnique = function (title = new_title, tasks = allTasks) {
-      for (t of tasks) {
-        if (title === t.title) {
-          console.log("Task is not unique. Will NOT add.");
-          return false;
-        };
+  // user clicks a button inside the table, let's find out which one
+  tableDataEls.addEventListener("click", (event) => {
+    switch (event.target.textContent.toLowerCase()) {
+      case "complete": {
+        console.log("complete");
+        break
       };
-      return true;
-    };
+      case "edit": {
+        console.log("edit");
+        break
+      }
+      case "delete": {
+        // console.log(event.target.parentElement.parentElement);
+        delTask(event.target.parentElement.parentElement);
+        break
+      }
+    }
+  });
 
-    if (new_title && _isUnique()) {
+  function delTask(task, tasks = allTasks) {
+    // use the findTask function to get the index of the title in the allTasks array, then remove one element starting at the previously found index position.
+    tasks.splice(findTask(task.children[1]), 1);
+    showTasks();
+  }
+
+  function findTask(task, tasks = allTasks) {
+    // create an array with only the tasks titles to prepare for indexOf()
+    const allTitles = tasks.map(task => task.title);
+    // trim whitespaces on the left and right, also convert to lowercase for comparison only then returns the index of the search  (or -1 if None)
+    console.log("here", task.value)
+    return allTitles.indexOf(task.value.trim().toLowerCase());
+  };
+
+  function createTask(task, tasks = allTasks) {
+    const new_title = task.value.trim();
+
+    if (findTask(newTaskEl) < 0 && new_title) {
       const new_task = {
         status: "Incomplete",
         title: new_title,
@@ -44,11 +71,12 @@ window.addEventListener("DOMContentLoaded", () => {
       tasks.push(new_task);
       showTasks();
     }
-    newTaskEl.textContent = "";
   };
-  
+
   function showTasks(tasks = allTasks) {
     tableDataEls.textContent = "";
+    // newTaskEl.textContent = "";
+    let t = {};
     for (t of tasks) {
       const row = document.createElement("tr");
       row.innerHTML = `<td>${t.status}</td>
@@ -61,6 +89,5 @@ window.addEventListener("DOMContentLoaded", () => {
       tableDataEls.appendChild(row);
     };
   };
-
   showTasks();
 });
