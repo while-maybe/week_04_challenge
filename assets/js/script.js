@@ -8,13 +8,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const tableDataEls = document.getElementById("table-data");
 
   const delRowEls = document.getElementsByClassName("delete-btn");
-
   const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
 
   addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
 
   // user clicks a button inside the table, let's find out which one
   tableDataEls.addEventListener("click", (event) => {
+    // look at the lower case button text to decide which action to take
     switch (event.target.textContent.toLowerCase()) {
       case "complete": {
 
@@ -28,19 +28,38 @@ window.addEventListener("DOMContentLoaded", () => {
         break
       };
       case "edit": {
-        console.log("edit");
+        // remove the hidden class from the modal dialog and overlay, making them visible
+        modal.classList.remove("hidden");
+        overlay.classList.remove("hidden");
+
+        // create an editField attached to the html 'edit-field' and populate the edit field with the value we want to edit
+        const editField = document.getElementById("edit-field");
+        editField.value = event.target.parentElement.parentElement.children[1].textContent;
+        
+        const formData = document.getElementById("form-data");
+        formData.addEventListener('submit', (event) => {
+          const test = formData.get('task-name');
+          console.log(test);
+
+          // e.preventDefault();
+          // editField.value = event.target.parentElement.parentElement.children[1].textContent;
+        });
         break
       };
       case "restore": {
+        // change the text in in the status column cell
         event.target.parentElement.parentElement.firstElementChild.textContent = "Incomplete";
+        // makes all 3 buttons available again
         event.target.parentElement.innerHTML = `
                         <td><button class="edit-btn">Edit</button>
                         <button class="complete-btn">Complete</button>
                         <button class="delete-btn">Delete</button></td>`;
+        // calls update tasks
         updateTasks();
         break
       };
       case "delete": {
+        // removes the entire row element
         tableDataEls.removeChild(event.target.parentElement.parentElement);
         updateTasks();
         break
@@ -99,7 +118,7 @@ window.addEventListener("DOMContentLoaded", () => {
       // restore the type of buttons to display between page reloads depending on if the status of the task is "incomplete" or not.
       const rowButtons = t.status.toLowerCase() === "incomplete"
       ?
-        `<button class="edit-btn">Edit</button>
+        `<button class="edit-btn modal-open-btn">Edit</button>
         <button class="complete-btn">Complete</button>
         <button class="delete-btn">Delete</button>` 
       :
@@ -114,6 +133,30 @@ window.addEventListener("DOMContentLoaded", () => {
                         <td>${rowButtons}</td>`
       tableDataEls.appendChild(row);
     };
+  };
+
+  // it's necessary to only define here otherwise complains about non-existing items
+
+  // the below are needed for modal implementation
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  const closeModalBtn = document.querySelector(".modal-close-btn");
+
+  // close modal on close btn click or overlay click
+  closeModalBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", closeModal);
+  // also close modal if pressing the esc key (and the modal is not hidden)
+  document.addEventListener("keydown", function (e) {
+    // check if the event is the Escape key and the modal does not contain the hidden class
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+      // TODO investigate
+      closeModal();
+    }
+  });
+  
+  function closeModal () {
+    modal.classList.add("hidden");
+    overlay.classList.add("hidden");
   };
 
   // calls loadTasks to add them to the page table

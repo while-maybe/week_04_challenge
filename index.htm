@@ -42,7 +42,7 @@
             <div class="widget">
                 <form class="newTaskForm">
                     <input type="text" id="newTask" placeholder="Enter a new task" />
-                    <button id="addButton" class="add-btn">Add Task</button>
+                    <button id="addButton" class="btn add-btn">Add Task</button>
                 </form>
             </div>
             <table class="task-table">
@@ -54,6 +54,26 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+
+                <!-- hidden by default modal to display an edit box -->
+                <section class="modal hidden">
+                    <div class="flex">
+                        <img src="https://i.pravatar.cc/50?u=student" alt="User Avatar" width="50px" height="50px">
+                        <button class="modal-close-btn">⨉</button>
+                      </div>
+                      <div>
+                        <h3>Edit</h3>
+                        <p>Go ahead, change what you need, type away :)
+                        </p>
+                      </div>
+                      <form id="form-data">
+                          <input type="text" id="edit-field" name="task-name">
+                          <button class="btn">Submit</button>
+                      </form>
+                </section>
+
+                <div class="overlay hidden"></div>
+                
                 <tbody id="table-data">
                     <!-- Example rows -->
 
