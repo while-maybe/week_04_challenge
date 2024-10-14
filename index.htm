@@ -27,11 +27,8 @@
         <aside class="sidebar">
             <nav>
                 <ul>
-                    <li><a href="#">Dashboard</a></li>
                     <li><a href="#">Tasks</a></li>
                     <li><a href="#">Completed</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Logout</a></li>
                 </ul>
             </nav>
         </aside>
@@ -50,7 +47,7 @@
                     <tr>
                         <th>Status</th>
                         <th>Task</th>
-                        <th>Date Created</th>
+                        <th>Due by</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -66,8 +63,9 @@
                         <p>Go ahead, change what you need, type away :)
                         </p>
                       </div>
-                      <form id="form-data">
-                          <input type="text" id="edit-field" name="task-name">
+                      <form action="" id="edit-form">
+                          <input type="text" name="edit-field">
+                          <input type="date" name="edit-date">
                           <button class="btn">Submit</button>
                       </form>
                 </section>

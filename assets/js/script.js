@@ -32,18 +32,26 @@ window.addEventListener("DOMContentLoaded", () => {
         modal.classList.remove("hidden");
         overlay.classList.remove("hidden");
 
-        // create an editField attached to the html 'edit-field' and populate the edit field with the value we want to edit
-        const editField = document.getElementById("edit-field");
+        // create an editField corresponding to the input field with name 'edit-field' and populate the edit field with the value we want to edit
+        const editField = document.getElementsByName("edit-field")[0];
         editField.value = event.target.parentElement.parentElement.children[1].textContent;
-        
-        const formData = document.getElementById("form-data");
-        formData.addEventListener('submit', (event) => {
-          const test = formData.get('task-name');
-          console.log(test);
 
-          // e.preventDefault();
-          // editField.value = event.target.parentElement.parentElement.children[1].textContent;
+        const dateValue = document.getElementsByName("edit-date")[0];
+        dateValue.value = event.target.parentElement.parentElement.children[2].textContent;
+        
+        // create a loginForm const which takes the value of the form submit
+        const loginForm = document.getElementById("edit-form");
+        // prepare for form submission
+        loginForm.addEventListener("submit", () => {
+          // update the corresponding task table cell
+          event.target.parentElement.parentElement.children[1].textContent = editField.value;
+          // update the date if modified by the user
+          event.target.parentElement.parentElement.children[2].textContent = dateValue.value;
+
+          // update the Tasks array
+          updateTasks();
         });
+
         break
       };
       case "restore": {
@@ -81,12 +89,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const new_title = newTaskEl.value.trim();
 
-
     if (!taskExists(newTaskEl) && new_title) {
+      // new_date
+      const date = new Date().toISOString().slice(0, 10);
+
       const row = document.createElement("tr");
       row.innerHTML = `<td>${"Incomplete"}</td>
                         <td>${new_title}</td>
-                        <td>${"2024-09-23"}</td>
+                        <td>${date}</td>
                         <td>
                           <button class="edit-btn">Edit</button>
                           <button class="complete-btn">Complete</button>
@@ -118,12 +128,12 @@ window.addEventListener("DOMContentLoaded", () => {
       // restore the type of buttons to display between page reloads depending on if the status of the task is "incomplete" or not.
       const rowButtons = t.status.toLowerCase() === "incomplete"
       ?
-        `<button class="edit-btn modal-open-btn">Edit</button>
-        <button class="complete-btn">Complete</button>
-        <button class="delete-btn">Delete</button>` 
+        `<button class="btn edit-btn modal-open-btn">Edit</button>
+        <button class="btn complete-btn">Complete</button>
+        <button class="btn delete-btn">Delete</button>` 
       :
-        `<button class="restore-btn">Restore</button>
-        <button class="delete-btn">Delete</button>`;
+        `<button class="btn restore-btn">Restore</button>
+        <button class="btn delete-btn">Delete</button>`;
 
       // creates a new row and populates the tds
       const row = document.createElement("tr");
