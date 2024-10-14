@@ -21,8 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
     date: "2024-09-01"
   };
 
-  const allTasks = [task1];
-  allTasks.push(task2);
+  const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
 
   addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
 
@@ -30,11 +29,26 @@ window.addEventListener("DOMContentLoaded", () => {
   tableDataEls.addEventListener("click", (event) => {
     switch (event.target.textContent.toLowerCase()) {
       case "complete": {
-        console.log("complete");
+
+        event.target.parentElement.parentElement.firstElementChild.textContent = "Completed";
+
+        event.target.parentElement.innerHTML = `
+                        <button class="restore-btn">Restore</button>
+                        <button class="delete-btn">Delete</button></td>`;
+        updateTasks();
         break
       };
       case "edit": {
         console.log("edit");
+        break
+      };
+      case "restore": {
+        event.target.parentElement.parentElement.firstElementChild.textContent = "Incomplete";
+        event.target.parentElement.innerHTML = `
+                        <td><button class="edit-btn">Edit</button>
+                        <button class="complete-btn">Complete</button>
+                        <button class="delete-btn">Delete</button></td>`;
+        updateTasks();
         break
       };
       case "delete": {
@@ -72,6 +86,7 @@ window.addEventListener("DOMContentLoaded", () => {
       tableDataEls.appendChild(row);
       updateTasks();
     };
+    newTaskEl.value = "";
   };
 
   function updateTasks() {
@@ -84,9 +99,11 @@ window.addEventListener("DOMContentLoaded", () => {
       };
       allTasks.push(new_task);
     };
+    localStorage.setItem('allTasks', JSON.stringify(allTasks));
   };
 
   function loadTasks(tasks = allTasks) {
+    
     let t = {};
     for (t of tasks) {
       const row = document.createElement("tr");
@@ -99,6 +116,5 @@ window.addEventListener("DOMContentLoaded", () => {
       tableDataEls.appendChild(row);
     };
   };
-
   loadTasks();
 });

@@ -45,11 +45,14 @@ body {
     padding: 20px;
     color: white;
 }
+.search-form {
+    width: 60%;
+}
 
 .search-bar {
     padding: 10px;
     font-size: 1rem;
-    width: 60%;
+    width: 80%;
 }
 
 .user-avatar img {
@@ -130,4 +133,83 @@ body {
 
 .complete-btn:hover {
     background-color: #45a049;
+}
+
+.edit-btn {
+    background-color: #b9ad02;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.edit-btn:hover {
+    background-color: #817801;
+}
+
+.delete-btn {
+    background-color: #d32424;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.delete-btn:hover {
+    background-color: #a31b1b;
+}
+
+.search-btn {
+    background-color: #577b58;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.search-btn:hover {
+    background-color: #3c553d;
+}
+
+.search-btn {
+    background-color: #577b58;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-size: 1rem;
+}
+
+.search-btn:hover {
+    background-color: #3c553d;
+}
+
+.add-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.add-btn:hover {
+    background-color: #45a049;
+}
+
+.restore-btn {
+    background-color: #666666;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.restore-btn:hover {
+    background-color: #aaaaaa;
 }

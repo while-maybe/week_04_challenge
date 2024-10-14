@@ -14,8 +14,10 @@
     <div class="dashboard-container">
         <!-- Header -->
         <header class="header">
-            <input id="searchTerm" type="text" placeholder="Search tasks..." class="search-bar">
-            <button id="searchButton">Search</button>
+            <form class="search-form">
+                <input id="searchTerm" type="text" placeholder="Search tasks..." class="search-bar">
+                <button id="searchButton" class="search-btn">Search</button>
+            </form>
             <div class="user-avatar">
                 <img src="https://i.pravatar.cc/50?u=student" alt="User Avatar">
             </div>
@@ -38,8 +40,10 @@
         <main class="main-content">
             <h2>Task List</h2>
             <div class="widget">
-                <input type="text" id="newTask" placeholder="Enter a new task" />
-                <button id="addButton">Add</button>
+                <form class="newTaskForm">
+                    <input type="text" id="newTask" placeholder="Enter a new task" />
+                    <button id="addButton" class="add-btn">Add Task</button>
+                </form>
             </div>
             <table class="task-table">
                 <thead>
