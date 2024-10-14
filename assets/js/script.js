@@ -23,8 +23,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const allTasks = [task1];
   allTasks.push(task2);
-  
-  addButtonEl.addEventListener("click", () => createTask(newTaskEl));
+
+  addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
 
   // user clicks a button inside the table, let's find out which one
   tableDataEls.addEventListener("click", (event) => {
@@ -36,46 +36,57 @@ window.addEventListener("DOMContentLoaded", () => {
       case "edit": {
         console.log("edit");
         break
-      }
+      };
       case "delete": {
-        // console.log(event.target.parentElement.parentElement);
-        delTask(event.target.parentElement.parentElement);
+        tableDataEls.removeChild(event.target.parentElement.parentElement);
+        updateTasks();
         break
-      }
-    }
+      };
+    };
   });
 
-  function delTask(task, tasks = allTasks) {
-    // use the findTask function to get the index of the title in the allTasks array, then remove one element starting at the previously found index position.
-    tasks.splice(findTask(task.children[1]), 1);
-    showTasks();
-  }
+  function taskExists(task) {
+    // console.log(allTasks);
+    // create an array with only the lower case task titles
+    const allTitles = allTasks.map(t => t.title.toLowerCase());
 
-  function findTask(task, tasks = allTasks) {
-    // create an array with only the tasks titles to prepare for indexOf()
-    const allTitles = tasks.map(task => task.title);
-    // trim whitespaces on the left and right, also convert to lowercase for comparison only then returns the index of the search  (or -1 if None)
-    console.log("here", task.value)
-    return allTitles.indexOf(task.value.trim().toLowerCase());
+    // trim whitespaces on the left and right, also convert to lowercase for comparison only then returns true or false if the element is included
+    return allTitles.includes(task.value.trim().toLowerCase());
   };
 
-  function createTask(task, tasks = allTasks) {
-    const new_title = task.value.trim();
+  function createTaskEl(newTaskEl) {
+    // create a "clean title from the user input"
+    
+    const new_title = newTaskEl.value.trim();
 
-    if (findTask(newTaskEl) < 0 && new_title) {
+    if (!taskExists(newTaskEl) && new_title) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${"Incomplete"}</td>
+                        <td>${new_title}</td>
+                        <td>${"2024-09-23"}</td>
+                        <td>
+                          <button class="edit-btn">Edit</button>
+                          <button class="complete-btn">Complete</button>
+                          <button class="delete-btn">Delete</button>
+                        </td>`;
+      tableDataEls.appendChild(row);
+      updateTasks();
+    };
+  };
+
+  function updateTasks() {
+    allTasks.length = 0;
+    for (let rowEl of tableDataEls.children) {
       const new_task = {
-        status: "Incomplete",
-        title: new_title,
-        date: "2024-09-23",
+        status: rowEl.children[0].textContent,
+        title: rowEl.children[1].textContent,
+        date: rowEl.children[2].textContent
       };
-      tasks.push(new_task);
-      showTasks();
-    }
+      allTasks.push(new_task);
+    };
   };
 
-  function showTasks(tasks = allTasks) {
-    tableDataEls.textContent = "";
-    // newTaskEl.textContent = "";
+  function loadTasks(tasks = allTasks) {
     let t = {};
     for (t of tasks) {
       const row = document.createElement("tr");
@@ -85,9 +96,9 @@ window.addEventListener("DOMContentLoaded", () => {
                         <td><button class="edit-btn">Edit</button>
                         <button class="complete-btn">Complete</button>
                         <button class="delete-btn">Delete</button></td>`;
-
       tableDataEls.appendChild(row);
     };
   };
-  showTasks();
+
+  loadTasks();
 });
