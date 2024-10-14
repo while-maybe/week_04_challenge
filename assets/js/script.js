@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {
         event.target.parentElement.innerHTML = `
                         <button class="restore-btn">Restore</button>
                         <button class="delete-btn">Delete</button></td>`;
+        console.log("complete");
         updateTasks();
         break
       };
@@ -93,14 +94,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function loadTasks(tasks = allTasks) {
 
-    let t = {};
-    for (t of tasks) {
+    for (let t of tasks) {
 
       // restore the type of buttons to display between page reloads depending on if the status of the task is "incomplete" or not.
       const rowButtons = t.status.toLowerCase() === "incomplete"
       ?
         `<button class="edit-btn">Edit</button>
-        <button class="complete-btn" > Complete</button >
+        <button class="complete-btn">Complete</button>
         <button class="delete-btn">Delete</button>` 
       :
         `<button class="restore-btn">Restore</button>
