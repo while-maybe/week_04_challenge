@@ -3,14 +3,54 @@
 window.addEventListener("DOMContentLoaded", () => {
   const searchTermEl = document.getElementById("searchTerm");
   const searchBtnEl = document.getElementById("searchButton");
-  const newTaskEl = document.getElementById("newTask");
+  // const newTaskEl = document.getElementById("newTask");
   const addButtonEl = document.getElementById("addButton");
   const tableDataEls = document.getElementById("table-data");
 
-  const delRowEls = document.getElementsByClassName("delete-btn");
+  // const delRowEls = document.getElementsByClassName("delete-btn");
   const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
 
-  addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
+  // addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
+  addButtonEl.addEventListener("click", (event) => {
+    // remove the hidden class from the modal dialog and overlay, making them visible
+    modal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+
+    // change the modal text value
+    document.getElementsByClassName("modal-title")[0].textContent = "New task";
+    // change the modal description text
+    document.getElementsByClassName("modal-description")[0].textContent = "Create a new task, type away...";
+
+    // create an editField corresponding to the input field with name 'edit-field' and populate the edit field with the value we want to edit
+    const editField = document.getElementsByName("edit-field")[0];
+    const dateValue = document.getElementsByName("edit-date")[0];
+    // extract the only the first 10 chars for the year, month and day from the standardized JS date
+    dateValue.value = new Date().toISOString().slice(0, 10);
+
+    // create a loginForm const which takes the value of the form submit
+    const newTaskForm = document.getElementById("edit-form");
+
+    // prepare for form submission
+    newTaskForm.addEventListener("submit", () => {
+
+      const taskTitle = editField.value.trim();
+      
+      if (taskTitle && !taskExists(taskTitle)) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${"Incomplete"}</td>
+                          <td>${taskTitle}</td>
+                          <td>${dateValue.value}</td>
+                          <td>
+                            <button class="edit-btn">Edit</button>
+                            <button class="complete-btn">Complete</button>
+                            <button class="delete-btn">Delete</button>
+                          </td>`;
+  
+        tableDataEls.appendChild(row);
+        updateTasks();
+      }
+    });
+  });
 
   // user clicks a button inside the table, let's find out which one
   tableDataEls.addEventListener("click", (event) => {
@@ -21,9 +61,8 @@ window.addEventListener("DOMContentLoaded", () => {
         event.target.parentElement.parentElement.firstElementChild.textContent = "Completed";
 
         event.target.parentElement.innerHTML = `
-                        <button class="restore-btn">Restore</button>
-                        <button class="delete-btn">Delete</button></td>`;
-        console.log("complete");
+          <button class="restore-btn">Restore</button>
+          <button class="delete-btn">Delete</button></td>`;
         updateTasks();
         break
       };
@@ -31,6 +70,11 @@ window.addEventListener("DOMContentLoaded", () => {
         // remove the hidden class from the modal dialog and overlay, making them visible
         modal.classList.remove("hidden");
         overlay.classList.remove("hidden");
+
+        // change the modal text value
+        document.getElementsByClassName("modal-title")[0].textContent = "Edit task";
+        // change the modal description text
+        document.getElementsByClassName("modal-description")[0].textContent = "Go ahead, change what you need, type away :)";
 
         // create an editField corresponding to the input field with name 'edit-field' and populate the edit field with the value we want to edit
         const editField = document.getElementsByName("edit-field")[0];
@@ -51,7 +95,6 @@ window.addEventListener("DOMContentLoaded", () => {
           // update the Tasks array
           updateTasks();
         });
-
         break
       };
       case "restore": {
@@ -75,37 +118,12 @@ window.addEventListener("DOMContentLoaded", () => {
     };
   });
 
-  function taskExists(task) {
-    // console.log(allTasks);
+  function taskExists(taskTitle) {
     // create an array with only the lower case task titles
     const allTitles = allTasks.map(t => t.title.toLowerCase());
-
-    // trim whitespaces on the left and right, also convert to lowercase for comparison only then returns true or false if the element is included
-    return allTitles.includes(task.value.trim().toLowerCase());
-  };
-
-  function createTaskEl(newTaskEl) {
-    // create a "clean title from the user input"
-
-    const new_title = newTaskEl.value.trim();
-
-    if (!taskExists(newTaskEl) && new_title) {
-      // new_date
-      const date = new Date().toISOString().slice(0, 10);
-
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${"Incomplete"}</td>
-                        <td>${new_title}</td>
-                        <td>${date}</td>
-                        <td>
-                          <button class="edit-btn">Edit</button>
-                          <button class="complete-btn">Complete</button>
-                          <button class="delete-btn">Delete</button>
-                        </td>`;
-      tableDataEls.appendChild(row);
-      updateTasks();
-    };
-    newTaskEl.value = "";
+    // convert to lowercase for comparison only then returns true or false if the element is included
+    console.log(taskTitle);
+    return allTitles.includes(taskTitle.toLowerCase());
   };
 
   function updateTasks() {
@@ -144,8 +162,6 @@ window.addEventListener("DOMContentLoaded", () => {
       tableDataEls.appendChild(row);
     };
   };
-
-  // it's necessary to only define here otherwise complains about non-existing items
 
   // the below are needed for modal implementation
   const modal = document.querySelector(".modal");

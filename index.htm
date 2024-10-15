@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Task Dashboard</title>
     <link rel="stylesheet" href="./assets/css/style.css">
-    
+
 </head>
 
 <body>
@@ -37,10 +37,7 @@
         <main class="main-content">
             <h2>Task List</h2>
             <div class="widget">
-                <form class="newTaskForm">
-                    <input type="text" id="newTask" placeholder="Enter a new task" />
-                    <button id="addButton" class="btn add-btn">Add Task</button>
-                </form>
+                <button id="addButton" class="btn add-btn">Add Task</button>
             </div>
             <table class="task-table">
                 <thead>
@@ -57,21 +54,20 @@
                     <div class="flex">
                         <img src="https://i.pravatar.cc/50?u=student" alt="User Avatar" width="50px" height="50px">
                         <button class="modal-close-btn">⨉</button>
-                      </div>
-                      <div>
-                        <h3>Edit</h3>
-                        <p>Go ahead, change what you need, type away :)
-                        </p>
-                      </div>
-                      <form action="" id="edit-form">
-                          <input type="text" name="edit-field">
-                          <input type="date" name="edit-date">
-                          <button class="btn">Submit</button>
-                      </form>
+                    </div>
+                    <div>
+                        <h3 class="modal-title"></h3>
+                        <p class="modal-description"></p>
+                    </div>
+                    <form action="" id="edit-form">
+                        <input type="text" name="edit-field" required autofocus>
+                        <input type="date" name="edit-date" required>
+                        <button class="btn">Submit</button>
+                    </form>
                 </section>
 
                 <div class="overlay hidden"></div>
-                
+
                 <tbody id="table-data">
                     <!-- Example rows -->
 
