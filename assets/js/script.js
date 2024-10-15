@@ -137,7 +137,21 @@ window.addEventListener("DOMContentLoaded", () => {
       allTasks.push(new_task);
     };
     localStorage.setItem('allTasks', JSON.stringify(allTasks));
+    updateCounters();
   };
+
+  function updateCounters() {
+    const totalTaskCount = tableDataEls.children.length;
+
+    let openTaskCount = 0;
+    for (let i = 0; i < totalTaskCount; i++) {
+      openTaskCount += [tableDataEls.children[i].children[0].textContent.toLowerCase()] == 'incomplete' ? 1 : 0;
+    }
+
+    console.log(openTaskCount);
+    document.getElementsByClassName("open-tasks")[0].textContent = `OpenTasks - ${openTaskCount}`;
+    document.getElementsByClassName("completed-tasks")[0].textContent = `Completed - ${totalTaskCount - openTaskCount}`;
+  }
 
   function loadTasks(tasks = allTasks) {
 
@@ -161,6 +175,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         <td>${rowButtons}</td>`
       tableDataEls.appendChild(row);
     };
+    updateCounters();
   };
 
   // the below are needed for modal implementation
