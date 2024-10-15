@@ -165,6 +165,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     console.log(openTaskCount);
+    document.getElementsByClassName("all-tasks")[0].textContent = `All Tasks - ${totalTaskCount}`;
     document.getElementsByClassName("open-tasks")[0].textContent = `Open Tasks - ${openTaskCount}`;
     document.getElementsByClassName("completed-tasks")[0].textContent = `Completed - ${totalTaskCount - openTaskCount}`;
   }
