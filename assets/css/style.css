@@ -21,28 +21,6 @@ body {
     gap: 0 10px;
 }
 
-@media screen and (max-width: 600px) {
-    .dashboard-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 2fr 1fr 20fr;
-        grid-template-areas:
-            "header"
-            "sidebar"
-            "main";
-        height: 100vh;
-    }
-
-    .menu-items {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .sidebar nav ul li {
-        margin: auto;
-    }
-}
-
 /* Header */
 .header {
     grid-area: header;
@@ -219,6 +197,7 @@ body {
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    margin-left: auto;
 }
 
 .add-btn:hover {
@@ -327,4 +306,10 @@ display: none;
     .header {
         padding: 15px;
     }
+}
+
+.widget {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
