@@ -87,14 +87,30 @@ window.addEventListener("DOMContentLoaded", () => {
         const loginForm = document.getElementById("edit-form");
         // prepare for form submission
         loginForm.addEventListener("submit", () => {
-          // update the corresponding task table cell
-          event.target.parentElement.parentElement.children[1].textContent = editField.value;
-          // update the date if modified by the user
-          event.target.parentElement.parentElement.children[2].textContent = dateValue.value;
+          
+          const taskTitle = editField.value.trim();
+      
+          if (taskTitle && !taskExists(taskTitle)) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${"Incomplete"}</td>
+                              <td>${taskTitle}</td>
+                              <td>${dateValue.value}</td>
+                              <td>
+                                <button class="edit-btn">Edit</button>
+                                <button class="complete-btn">Complete</button>
+                                <button class="delete-btn">Delete</button>
+                              </td>`;
+      
+            // update the corresponding task table cell
+            event.target.parentElement.parentElement.children[1].textContent = editField.value;
+            // update the date if modified by the user
+            event.target.parentElement.parentElement.children[2].textContent = dateValue.value;
 
-          // update the Tasks array
-          updateTasks();
+            updateTasks();
+          }
+        
         });
+
         break
       };
       case "restore": {

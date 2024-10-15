@@ -278,6 +278,12 @@ backdrop-filter: blur(3px);
 z-index: 1;
 }
 
+.widget {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .hidden {
 display: none;
 }
@@ -306,10 +312,4 @@ display: none;
     .header {
         padding: 15px;
     }
-}
-
-.widget {
-    display: flex;
-    gap: 10px;
-    align-items: center;
 }
