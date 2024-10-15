@@ -61,7 +61,7 @@ window.addEventListener("DOMContentLoaded", () => {
         event.target.parentElement.parentElement.firstElementChild.textContent = "Completed";
 
         event.target.parentElement.innerHTML = `
-          <button class="restore-btn">Restore</button>
+          <td><button class="restore-btn">Restore</button>
           <button class="delete-btn">Delete</button></td>`;
         updateTasks();
         break
@@ -102,9 +102,9 @@ window.addEventListener("DOMContentLoaded", () => {
         event.target.parentElement.parentElement.firstElementChild.textContent = "Incomplete";
         // makes all 3 buttons available again
         event.target.parentElement.innerHTML = `
-                        <td><button class="edit-btn">Edit</button>
-                        <button class="complete-btn">Complete</button>
-                        <button class="delete-btn">Delete</button></td>`;
+                        <td><button class="btn edit-btn">Edit</button>
+                        <button class="btn complete-btn">Complete</button>
+                        <button class="btn delete-btn">Delete</button></td>`;
         // calls update tasks
         updateTasks();
         break
@@ -160,12 +160,12 @@ window.addEventListener("DOMContentLoaded", () => {
       // restore the type of buttons to display between page reloads depending on if the status of the task is "incomplete" or not.
       const rowButtons = t.status.toLowerCase() === "incomplete"
       ?
-        `<button class="btn edit-btn modal-open-btn">Edit</button>
-        <button class="btn complete-btn">Complete</button>
-        <button class="btn delete-btn">Delete</button>` 
+        `<button class="edit-btn modal-open-btn">Edit</button>
+        <button class="complete-btn">Complete</button>
+        <button class="delete-btn">Delete</button>` 
       :
-        `<button class="btn restore-btn">Restore</button>
-        <button class="btn delete-btn">Delete</button>`;
+        `<button class="restore-btn">Restore</button>
+        <button class="delete-btn">Delete</button>`;
 
       // creates a new row and populates the tds
       const row = document.createElement("tr");
