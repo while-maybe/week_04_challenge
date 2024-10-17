@@ -20,7 +20,6 @@ window.addEventListener("DOMContentLoaded", () => {
     searchForm.addEventListener("submit", (event) => {
       event.stopImmediatePropagation();
       const searchTerm = searchTermEl.value.trim().toLowerCase();
-      console.log(searchTerm)
       const searchResults = allTasks.filter(task => task["title"].toLowerCase().includes(searchTerm));
 
       renderPage(searchResults);
@@ -157,7 +156,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function renderPage(taskList = JSON.parse(localStorage.getItem('allTasks')) || []) {
 
     // clear the search result description if any
-    // searchResDescription.classList.add("hidden");
+    searchResDescription.classList.add("hidden");
     
     tableDataEls.innerHTML = "";
 
