@@ -3,33 +3,53 @@
 window.addEventListener("DOMContentLoaded", () => {
   const searchTermEl = document.getElementById("searchTerm");
   const searchBtnEl = document.getElementById("searchButton");
+  const searchForm = document.getElementsByClassName("search-form")[0];
   const addButtonEl = document.getElementById("addButton");
   const tableDataEls = document.getElementById("table-data");
   const menuItemsEls = document.getElementsByClassName("menu-items")[0];
+  const searchResDescription = document.getElementsByClassName("search-res-description")[0];
 
   // const delRowEls = document.getElementsByClassName("delete-btn");
   const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
   renderPage();
   updateCounters();
 
+  // search function implemented as a form so that user can enter a 'search submission' if clicking or using enter key
+  searchBtnEl.addEventListener("click", () => {
+    
+    searchForm.addEventListener("submit", () => {
+      const searchTerm = searchTermEl.value.trim().toLowerCase();
+      const searchResults = allTasks.filter(task => task["title"].toLowerCase().includes(searchTerm));
+
+      searchTermEl.value = "";
+      renderPage(searchResults);
+
+      searchResDescription.innerHTML = `<em>'${searchTerm}'</em> found ${searchResults.length} times`;
+      searchResDescription.classList.remove("hidden");
+
+      // TODO - implement highligh of search term
+    });
+  }); // eventListener ends here
+
   menuItemsEls.addEventListener("click", (event) => {
     switch (event.target.className) {
       case "all-tasks": {
         renderPage();
-      break;        
+        break;
       };
       case "open-tasks": {
-          renderPage(allTasks.filter(row => row["status"].toLowerCase() === 'incomplete'));
-      break;        
+        // .filter() creates a new array is the condition returns true
+        renderPage(allTasks.filter(row => row["status"].toLowerCase() === 'incomplete'));
+        break;
       };
       case "completed-tasks": {
         renderPage(allTasks.filter(row => row["status"].toLowerCase() === 'completed'));
-      break;        
+        break;
       };
     };
   });
 
-  addButtonEl.addEventListener("click", (event) => {
+  addButtonEl.addEventListener("click", () => {
     openModal();
     // populates the modal with a title and description
     const modalTitle = document.getElementsByClassName("modal-title")[0];
@@ -133,7 +153,10 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   function renderPage(taskList = JSON.parse(localStorage.getItem('allTasks')) || []) {
-    // const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+
+    // clear the search result description if any
+    searchResDescription.classList.add("hidden");
+    
     tableDataEls.innerHTML = "";
 
     taskList.forEach(oneRow => {
@@ -177,7 +200,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const overlay = document.querySelector(".overlay");
   const closeModalBtn = document.querySelector(".modal-close-btn");
 
-
   // close modal on X btn click, overlay click or Escape key press
   closeModalBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", closeModal);
@@ -185,9 +207,8 @@ window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", function (e) {
     // check if the event is the Escape key and the modal is not hidden
     e.key === "Escape" && !modal.classList.contains("hidden") && closeModal();
-
   });
-  
+
   function openModal() {
     document.querySelector(".modal").classList.remove("hidden");
     document.querySelector(".overlay").classList.remove("hidden");
