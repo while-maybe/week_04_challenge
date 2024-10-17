@@ -5,11 +5,29 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchBtnEl = document.getElementById("searchButton");
   const addButtonEl = document.getElementById("addButton");
   const tableDataEls = document.getElementById("table-data");
+  const menuItemsEls = document.getElementsByClassName("menu-items")[0];
 
   // const delRowEls = document.getElementsByClassName("delete-btn");
   const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
   renderPage();
   updateCounters();
+
+  menuItemsEls.addEventListener("click", (event) => {
+    switch (event.target.className) {
+      case "all-tasks": {
+        renderPage();
+      break;        
+      };
+      case "open-tasks": {
+          renderPage(allTasks.filter(row => row["status"].toLowerCase() === 'incomplete'));
+      break;        
+      };
+      case "completed-tasks": {
+        renderPage(allTasks.filter(row => row["status"].toLowerCase() === 'completed'));
+      break;        
+      };
+    };
+  });
 
   addButtonEl.addEventListener("click", (event) => {
     openModal();
@@ -114,11 +132,11 @@ window.addEventListener("DOMContentLoaded", () => {
     return allTitles.includes(taskTitle.toLowerCase());
   };
 
-  function renderPage() {
-    const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+  function renderPage(taskList = JSON.parse(localStorage.getItem('allTasks')) || []) {
+    // const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
     tableDataEls.innerHTML = "";
 
-    allTasks.forEach(oneRow => {
+    taskList.forEach(oneRow => {
       // determine which buttons to include
       const rowButtons = oneRow["status"].toLowerCase() === "incomplete"
         ?
@@ -159,6 +177,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const overlay = document.querySelector(".overlay");
   const closeModalBtn = document.querySelector(".modal-close-btn");
 
+
   // close modal on X btn click, overlay click or Escape key press
   closeModalBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", closeModal);
@@ -167,14 +186,15 @@ window.addEventListener("DOMContentLoaded", () => {
     // check if the event is the Escape key and the modal is not hidden
     e.key === "Escape" && !modal.classList.contains("hidden") && closeModal();
 
-    function openModal() {
-      document.querySelector(".modal").classList.remove("hidden");
-      document.querySelector(".overlay").classList.remove("hidden");
-    };
-
-    function closeModal() {
-      document.querySelector(".modal").classList.add("hidden");
-      document.querySelector(".overlay").classList.add("hidden");
-    };
   });
+  
+  function openModal() {
+    document.querySelector(".modal").classList.remove("hidden");
+    document.querySelector(".overlay").classList.remove("hidden");
+  };
+
+  function closeModal() {
+    document.querySelector(".modal").classList.add("hidden");
+    document.querySelector(".overlay").classList.add("hidden");
+  };
 });
