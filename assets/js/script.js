@@ -17,15 +17,18 @@ window.addEventListener("DOMContentLoaded", () => {
   // search function implemented as a form so that user can enter a 'search submission' if clicking or using enter key
   searchBtnEl.addEventListener("click", () => {
     
-    searchForm.addEventListener("submit", () => {
+    searchForm.addEventListener("submit", (event) => {
+      event.stopImmediatePropagation();
       const searchTerm = searchTermEl.value.trim().toLowerCase();
+      console.log(searchTerm)
       const searchResults = allTasks.filter(task => task["title"].toLowerCase().includes(searchTerm));
 
-      searchTermEl.value = "";
       renderPage(searchResults);
+      searchTermEl.value = "";
 
       searchResDescription.innerHTML = `<em>'${searchTerm}'</em> found ${searchResults.length} times`;
       searchResDescription.classList.remove("hidden");
+      
 
       // TODO - implement highligh of search term
     });
@@ -129,7 +132,6 @@ window.addEventListener("DOMContentLoaded", () => {
             finishOps();
           };
         }); // eventListener ends here
-        closeModal();
         break
       };
     };
@@ -155,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function renderPage(taskList = JSON.parse(localStorage.getItem('allTasks')) || []) {
 
     // clear the search result description if any
-    searchResDescription.classList.add("hidden");
+    // searchResDescription.classList.add("hidden");
     
     tableDataEls.innerHTML = "";
 
@@ -207,15 +209,16 @@ window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", function (e) {
     // check if the event is the Escape key and the modal is not hidden
     e.key === "Escape" && !modal.classList.contains("hidden") && closeModal();
+    
   });
-
+  
+  function closeModal() {
+    document.querySelector(".modal").classList.add("hidden");
+    document.querySelector(".overlay").classList.add("hidden");
+  };
   function openModal() {
     document.querySelector(".modal").classList.remove("hidden");
     document.querySelector(".overlay").classList.remove("hidden");
   };
 
-  function closeModal() {
-    document.querySelector(".modal").classList.add("hidden");
-    document.querySelector(".overlay").classList.add("hidden");
-  };
 });
