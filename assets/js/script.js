@@ -91,6 +91,7 @@ window.addEventListener("DOMContentLoaded", () => {
             finishOps();
           };
         }); // eventListener ends here
+        closeModal();
         break
       };
     };
@@ -158,9 +159,22 @@ window.addEventListener("DOMContentLoaded", () => {
   const overlay = document.querySelector(".overlay");
   const closeModalBtn = document.querySelector(".modal-close-btn");
 
-  function openModal() {
-    modal.classList.remove("hidden");
-    overlay.classList.remove("hidden");
-  };
+  // close modal on X btn click, overlay click or Escape key press
+  closeModalBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", closeModal);
+  // also close modal if pressing the esc key (and the modal is not hidden)
+  document.addEventListener("keydown", function (e) {
+    // check if the event is the Escape key and the modal is not hidden
+    e.key === "Escape" && !modal.classList.contains("hidden") && closeModal();
 
+    function openModal() {
+      document.querySelector(".modal").classList.remove("hidden");
+      document.querySelector(".overlay").classList.remove("hidden");
+    };
+
+    function closeModal() {
+      document.querySelector(".modal").classList.add("hidden");
+      document.querySelector(".overlay").classList.add("hidden");
+    };
+  });
 });
