@@ -122,7 +122,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
           const taskTitle = editField.value.trim();
           // checks if title is empty and title duplicates
-          if (taskTitle && !taskExists(taskTitle)) {
+
+          // TODO - allow editing if user just wants to change the date
+          const differentDate = allTasks[rowWithClick]["date"] !== dateValue.value;
+          if (taskTitle && (differentDate || !taskExists(taskTitle))) {
             allTasks[rowWithClick] = {
               "status": "Incomplete",
               "title": taskTitle,
@@ -131,7 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
             finishOps();
           };
         }); // eventListener ends here
-        break
+        break;
       };
     };
   });
