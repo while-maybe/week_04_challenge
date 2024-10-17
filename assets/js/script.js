@@ -9,12 +9,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // const delRowEls = document.getElementsByClassName("delete-btn");
   const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+  renderPage();
+  updateCounters();
+
 
   // addButtonEl.addEventListener("click", () => createTaskEl(newTaskEl));
   addButtonEl.addEventListener("click", (event) => {
     // remove the hidden class from the modal dialog and overlay, making them visible
-    modal.classList.remove("hidden");
-    overlay.classList.remove("hidden");
+    openModal();
 
     // change the modal text value
     document.getElementsByClassName("modal-title")[0].textContent = "New task";
@@ -27,15 +29,15 @@ window.addEventListener("DOMContentLoaded", () => {
     // extract the only the first 10 chars for the year, month and day from the standardized JS date
     dateValue.value = new Date().toISOString().slice(0, 10);
 
-    // create a loginForm const which takes the value of the form submit
+    // create a newTaskForm const which takes the value of the form submit
     const newTaskForm = document.getElementById("edit-form");
-
     // prepare for form submission
     newTaskForm.addEventListener("submit", () => {
 
       const taskTitle = editField.value.trim();
       
       if (taskTitle && !taskExists(taskTitle)) {
+
         const row = document.createElement("tr");
         row.innerHTML = `<td>${"Incomplete"}</td>
                           <td>${taskTitle}</td>
@@ -54,22 +56,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // user clicks a button inside the table, let's find out which one
   tableDataEls.addEventListener("click", (event) => {
+    const rowWithClick = getTableRowIndex(event.target.parentElement.parentElement);
     // look at the lower case button text to decide which action to take
     switch (event.target.textContent.toLowerCase()) {
       case "complete": {
+        allTasks[rowWithClick]["status"] = "Completed";
 
-        event.target.parentElement.parentElement.firstElementChild.textContent = "Completed";
-
-        event.target.parentElement.innerHTML = `
-          <td><button class="restore-btn">Restore</button>
-          <button class="delete-btn">Delete</button></td>`;
-        updateTasks();
+        finishOps();
         break
       };
+
       case "edit": {
-        // remove the hidden class from the modal dialog and overlay, making them visible
-        modal.classList.remove("hidden");
-        overlay.classList.remove("hidden");
+        openModal();
 
         // change the modal text value
         document.getElementsByClassName("modal-title")[0].textContent = "Edit task";
@@ -84,13 +82,14 @@ window.addEventListener("DOMContentLoaded", () => {
         dateValue.value = event.target.parentElement.parentElement.children[2].textContent;
         
         // create a loginForm const which takes the value of the form submit
-        const loginForm = document.getElementById("edit-form");
+        const editForm = document.getElementById("edit-form");
         // prepare for form submission
-        loginForm.addEventListener("submit", () => {
+        editForm.addEventListener("submit", () => {
           
           const taskTitle = editField.value.trim();
       
           if (taskTitle && !taskExists(taskTitle)) {
+
             const row = document.createElement("tr");
             row.innerHTML = `<td>${"Incomplete"}</td>
                               <td>${taskTitle}</td>
@@ -110,29 +109,32 @@ window.addEventListener("DOMContentLoaded", () => {
           }
         
         });
+        break
+      };
 
-        break
-      };
       case "restore": {
-        // change the text in in the status column cell
-        event.target.parentElement.parentElement.firstElementChild.textContent = "Incomplete";
-        // makes all 3 buttons available again
-        event.target.parentElement.innerHTML = `
-                        <td><button class="btn edit-btn">Edit</button>
-                        <button class="btn complete-btn">Complete</button>
-                        <button class="btn delete-btn">Delete</button></td>`;
-        // calls update tasks
-        updateTasks();
-        break
+        allTasks[rowWithClick]["status"] = "Incomplete";
+        finishOps();
+        break;
       };
+
       case "delete": {
-        // removes the entire row element
-        tableDataEls.removeChild(event.target.parentElement.parentElement);
-        updateTasks();
-        break
+        allTasks.splice(getTableRowIndex(rowWithClick), 1);
+        finishOps();
+        break;
       };
     };
   });
+
+  function finishOps() {
+    localStorage.setItem('allTasks', JSON.stringify(allTasks));
+    updateCounters();
+    renderPage();
+  }
+
+  function getTableRowIndex(rowWithClick) {
+    return Array.prototype.indexOf.call(tableDataEls.children, rowWithClick);
+  }
 
   function taskExists(taskTitle) {
     // create an array with only the lower case task titles
@@ -140,6 +142,33 @@ window.addEventListener("DOMContentLoaded", () => {
     // convert to lowercase for comparison only then returns true or false if the element is included
     console.log(taskTitle);
     return allTitles.includes(taskTitle.toLowerCase());
+  };
+
+  function renderPage() {
+    const allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+    tableDataEls.innerHTML = "";
+
+    allTasks.forEach(oneRow => {
+      // determine which buttons to include
+      const rowButtons = oneRow["status"].toLowerCase() === "incomplete"
+      ?
+        `<button class="edit-btn modal-open-btn">Edit</button>
+        <button class="complete-btn">Complete</button>
+        <button class="delete-btn">Delete</button>` 
+      :
+        `<button class="restore-btn">Restore</button>
+        <button class="delete-btn">Delete</button>`;
+
+      // creates a new row and populates the tds
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${oneRow.status}</td>
+                        <td>${oneRow.title}</td>
+                        <td>${oneRow.date}</td>
+                        <td>${rowButtons}</td>`;
+
+      tableDataEls.appendChild(row);
+    });
+
   };
 
   function updateTasks() {
@@ -157,14 +186,13 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   function updateCounters() {
-    const totalTaskCount = tableDataEls.children.length;
+    const totalTaskCount = allTasks.length;
 
     let openTaskCount = 0;
     for (let i = 0; i < totalTaskCount; i++) {
       openTaskCount += [tableDataEls.children[i].children[0].textContent.toLowerCase()] == 'incomplete' ? 1 : 0;
     }
 
-    console.log(openTaskCount);
     document.getElementsByClassName("all-tasks")[0].textContent = `All Tasks - ${totalTaskCount}`;
     document.getElementsByClassName("open-tasks")[0].textContent = `Open Tasks - ${openTaskCount}`;
     document.getElementsByClassName("completed-tasks")[0].textContent = `Completed - ${totalTaskCount - openTaskCount}`;
@@ -212,11 +240,16 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
   
+  function openModal () {
+    modal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+  };
+
   function closeModal () {
     modal.classList.add("hidden");
     overlay.classList.add("hidden");
   };
 
   // calls loadTasks to add them to the page table
-  loadTasks();
+  // loadTasks();
 });
